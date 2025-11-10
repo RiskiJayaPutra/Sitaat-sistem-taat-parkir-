@@ -1,0 +1,22 @@
+# Laravel Backend
+sistem-parkir-api/vendor/
+sistem-parkir-api/node_modules/
+sistem-parkir-api/.env
+sistem-parkir-api/storage/*.key
+sistem-parkir-api/.phpunit.result.cache
+sistem-parkir-api/Homestead.json
+sistem-parkir-api/Homestead.yaml
+sistem-parkir-api/npm-debug.log
+sistem-parkir-api/yarn-error.log
+sistem-parkir-api/.idea
+sistem-parkir-api/.vscode
+
+# React Frontend
+sistem-parkir-ui/node_modules/
+sistem-parkir-ui/dist/
+sistem-parkir-ui/.env
+sistem-parkir-ui/.DS_Store
+
+# OS
+.DS_Store
+Thumbs.db
