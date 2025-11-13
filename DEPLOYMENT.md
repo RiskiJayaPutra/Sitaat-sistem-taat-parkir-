@@ -3,6 +3,7 @@
 ## Server Requirements
 
 ### Minimum Requirements
+
 - PHP >= 8.2
 - MySQL/MariaDB >= 8.0
 - Node.js >= 18.x
@@ -11,6 +12,7 @@
 - 10GB Disk Space
 
 ### Recommended
+
 - PHP 8.3
 - MySQL 8.0+
 - 4GB RAM
@@ -33,21 +35,24 @@ zip -r backend.zip sistem-parkir-api
 ```
 
 ### 2. Upload Backend
+
 1. Upload file `backend.zip` ke hosting
 2. Extract di folder `public_html` atau `www`
 3. Rename `.env.example` menjadi `.env`
 4. Edit `.env`:
+
    ```
    APP_ENV=production
    APP_DEBUG=false
    APP_URL=https://yourdomain.com
-   
+
    DB_CONNECTION=mysql
    DB_HOST=localhost
    DB_DATABASE=your_database_name
    DB_USERNAME=your_db_username
    DB_PASSWORD=your_db_password
    ```
+
 5. Jalankan di terminal hosting:
    ```bash
    php artisan key:generate
@@ -56,6 +61,7 @@ zip -r backend.zip sistem-parkir-api
    ```
 
 ### 3. Set Document Root
+
 - Arahkan document root ke folder `public` di dalam `sistem-parkir-api`
 - Contoh: `/home/username/public_html/sistem-parkir-api/public`
 
@@ -67,10 +73,12 @@ npm run build
 ```
 
 ### 5. Upload Frontend
+
 - Upload folder `dist` ke subdomain atau folder terpisah
 - Contoh: `app.yourdomain.com` atau `/public_html/app`
 
 ### 6. Configure .htaccess (Frontend)
+
 ```apache
 <IfModule mod_rewrite.c>
   RewriteEngine On
@@ -294,18 +302,21 @@ tail -f /var/log/nginx/access.log
 ## Troubleshooting
 
 ### 502 Bad Gateway
+
 ```bash
 sudo systemctl status php8.2-fpm
 sudo systemctl restart php8.2-fpm
 ```
 
 ### Permission Issues
+
 ```bash
 sudo chown -R www-data:www-data /var/www/parkir
 sudo chmod -R 755 /var/www/parkir
 ```
 
 ### Clear Cache
+
 ```bash
 cd /var/www/parkir/sistem-parkir-api
 sudo php artisan cache:clear

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
 import {
   ShieldCheckIcon,
   PlusIcon,
@@ -77,22 +78,42 @@ export default function AdminManageSatpam() {
   };
 
   const handleDelete = (id, nama) => {
-    if (!window.confirm(`Yakin ingin menghapus satpam ${nama}?`)) return;
-
-    setMessage(null);
-    axiosClient
-      .delete(`/admin/satpam/${id}`)
-      .then((response) => {
-        setMessage({ type: "success", text: response.data.message });
-        fetchSatpam();
-      })
-      .catch((err) => {
-        console.error("Gagal menghapus satpam:", err);
-        setMessage({
-          type: "error",
-          text: "Gagal menghapus satpam. Coba lagi.",
-        });
-      });
+    Swal.fire({
+      title: "Hapus Satpam?",
+      text: `Yakin ingin menghapus satpam ${nama}? Aksi ini tidak dapat dibatalkan!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#EF4444",
+      cancelButtonColor: "#6B7280",
+      confirmButtonText: "Ya, Hapus!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setMessage(null);
+        axiosClient
+          .delete(`/admin/satpam/${id}`)
+          .then((response) => {
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil!",
+              text: response.data.message,
+              confirmButtonColor: "#4F46E5",
+              timer: 2000,
+              timerProgressBar: true,
+            });
+            fetchSatpam();
+          })
+          .catch((err) => {
+            console.error("Gagal menghapus satpam:", err);
+            Swal.fire({
+              icon: "error",
+              title: "Gagal!",
+              text: "Gagal menghapus satpam. Coba lagi.",
+              confirmButtonColor: "#EF4444",
+            });
+          });
+      }
+    });
   };
 
   return (

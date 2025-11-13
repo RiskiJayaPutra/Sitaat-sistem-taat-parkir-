@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import axiosClient from "../api/axiosClient";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
 import {
   CameraIcon,
   DocumentTextIcon,
-  CheckCircleIcon,
-  ExclamationCircleIcon,
   ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
 
@@ -14,8 +13,6 @@ export default function BuatLaporanPage() {
   const [platNomor, setPlatNomor] = useState("");
   const [foto, setFoto] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [error, setError] = useState(null);
-  const [sukses, setSukses] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -33,8 +30,6 @@ export default function BuatLaporanPage() {
 
   const handleSubmitLaporan = (event) => {
     event.preventDefault();
-    setError(null);
-    setSukses(null);
     setLoading(true);
 
     const formData = new FormData();
@@ -49,22 +44,40 @@ export default function BuatLaporanPage() {
       })
       .then((response) => {
         setLoading(false);
-        setSukses(response.data.message);
+
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text:
+            response.data.message ||
+            "Laporan berhasil dikirim dan sedang menunggu validasi.",
+          confirmButtonColor: "#4F46E5",
+          confirmButtonText: "OK",
+          timer: 3000,
+          timerProgressBar: true,
+        }).then(() => {
+          navigate("/dashboard");
+        });
+
         setPlatNomor("");
         setFoto(null);
         setPreviewUrl(null);
         document.getElementById("foto").value = null;
-
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 3000);
       })
       .catch((error) => {
         setLoading(false);
+
         const errorMessage =
           error.response?.data?.message ||
           "Terjadi kesalahan. Gagal mengirim laporan.";
-        setError(errorMessage);
+
+        Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: errorMessage,
+          confirmButtonColor: "#EF4444",
+          confirmButtonText: "Coba Lagi",
+        });
       });
   };
 
@@ -174,33 +187,6 @@ export default function BuatLaporanPage() {
               </label>
             )}
           </div>
-
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex items-start gap-3 rounded-xl bg-red-50 p-4 border border-red-200"
-            >
-              <ExclamationCircleIcon className="h-6 w-6 flex-shrink-0 text-red-600" />
-              <p className="text-sm font-medium text-red-800">{error}</p>
-            </motion.div>
-          )}
-
-          {sukses && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex items-start gap-3 rounded-xl bg-green-50 p-4 border border-green-200"
-            >
-              <CheckCircleIcon className="h-6 w-6 flex-shrink-0 text-green-600" />
-              <div>
-                <p className="text-sm font-bold text-green-800">{sukses}</p>
-                <p className="mt-1 text-xs text-green-700">
-                  Mengalihkan ke dashboard...
-                </p>
-              </div>
-            </motion.div>
-          )}
 
           <motion.button
             whileHover={{ scale: 1.02 }}

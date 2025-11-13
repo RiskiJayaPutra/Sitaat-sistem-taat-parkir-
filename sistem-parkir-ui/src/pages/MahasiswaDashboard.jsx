@@ -1,9 +1,8 @@
-// src/pages/MahasiswaDashboard.jsx
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
 import {
   ExclamationTriangleIcon,
   TrophyIcon,
@@ -39,24 +38,45 @@ export default function MahasiswaDashboard() {
   }, []);
 
   const handleCancelLaporan = (id) => {
-    if (!window.confirm("Yakin ingin membatalkan laporan ini?")) return;
+    Swal.fire({
+      title: "Batalkan Laporan?",
+      text: "Laporan yang dibatalkan tidak dapat dikembalikan!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#EF4444",
+      cancelButtonColor: "#6B7280",
+      confirmButtonText: "Ya, Batalkan!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosClient
+          .delete(`/laporan/${id}`)
+          .then(() => {
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil!",
+              text: "Laporan berhasil dibatalkan",
+              confirmButtonColor: "#4F46E5",
+              timer: 2000,
+              timerProgressBar: true,
+            });
 
-    axiosClient
-      .delete(`/laporan/${id}`)
-      .then(() => {
-        alert("Laporan berhasil dibatalkan");
-        // Refresh data
-        axiosClient.get("/my-dashboard").then(({ data }) => {
-          setDashboardData(data);
-        });
-        setSelectedLaporan(null);
-      })
-      .catch((error) => {
-        alert(
-          "Gagal membatalkan laporan: " +
-            (error.response?.data?.message || "Terjadi kesalahan")
-        );
-      });
+            axiosClient.get("/my-dashboard").then(({ data }) => {
+              setDashboardData(data);
+            });
+            setSelectedLaporan(null);
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal!",
+              text:
+                error.response?.data?.message || "Gagal membatalkan laporan",
+              confirmButtonColor: "#EF4444",
+            });
+          });
+      }
+    });
   };
 
   const containerVariants = {
