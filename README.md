@@ -1,13 +1,13 @@
-# 🚗 Sistem Taat Parkir Kampus
+# Sistem Taat Parkir Kampus
 
 Sistem informasi manajemen parkir kampus yang terintegrasi dengan fitur pelaporan pelanggaran, validasi petugas, dan sistem sanksi otomatis.
 
 ![Laravel](https://img.shields.io/badge/Laravel-11.x-red?style=flat&logo=laravel)
-![React](https://img.shields.io/badge/React-18.x-blue?style=flat&logo=react)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38B2AC?style=flat&logo=tailwind-css)
+![React](https://img.shields.io/badge/React-19.x-blue?style=flat&logo=react)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.x-38B2AC?style=flat&logo=tailwind-css)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)
 
-## 📋 Deskripsi
+## Deskripsi
 
 Sistem Taat Parkir adalah aplikasi web untuk mengelola pelanggaran parkir di lingkungan kampus dengan 3 role pengguna:
 
@@ -15,34 +15,34 @@ Sistem Taat Parkir adalah aplikasi web untuk mengelola pelanggaran parkir di lin
 - **Satpam** - Memvalidasi/menolak laporan pelanggaran
 - **Mahasiswa** - Melaporkan pelanggaran dan melihat status parkir
 
-## ✨ Fitur Utama
+## Fitur Utama
 
-### 👨‍💼 Admin Dashboard
+### Admin Dashboard
 
-- ✅ Manajemen data mahasiswa (CRUD)
-- ✅ Manajemen akun satpam
-- ✅ Statistik dashboard real-time (total mahasiswa, satpam, banned users)
-- ✅ Grafik pelanggaran per prodi
-- ✅ Sistem unban pengguna
-- ✅ Upload foto KTM, STNK, dan foto mahasiswa
+- Manajemen data mahasiswa (CRUD)
+- Manajemen akun satpam
+- Statistik dashboard real-time (total mahasiswa, satpam, banned users)
+- Grafik pelanggaran per prodi
+- Sistem unban pengguna
+- Upload foto KTM, STNK, dan foto mahasiswa
 
-### 🛡️ Satpam Dashboard
+### Satpam Dashboard
 
-- ✅ Validasi laporan pelanggaran
-- ✅ Statistik laporan (pending, valid, ditolak)
-- ✅ Preview foto bukti pelanggaran
-- ✅ Sistem sanksi otomatis (3-5 hari ban, hingga permanen)
+- Validasi laporan pelanggaran
+- Statistik laporan (pending, valid, ditolak)
+- Preview foto bukti pelanggaran
+- Sistem sanksi otomatis (3-5 hari ban, hingga permanen)
 
-### 👨‍🎓 Mahasiswa Dashboard
+### Mahasiswa Dashboard
 
-- ✅ Buat laporan pelanggaran dengan foto bukti
-- ✅ Status parkir dengan indikator ban (merah saat di-ban)
-- ✅ Riwayat pelanggaran pribadi
-- ✅ Manajemen laporan (lihat detail, batalkan pending)
-- ✅ Wall of Shame - Top 10 pelanggar bulan ini
-- ✅ Auto-redirect setelah laporan berhasil
+- Buat laporan pelanggaran dengan foto bukti
+- Status parkir dengan indikator ban (merah saat di-ban)
+- Riwayat pelanggaran pribadi
+- Manajemen laporan (lihat detail, batalkan pending)
+- Wall of Shame - Top 10 pelanggar bulan ini
+- Auto-redirect setelah laporan berhasil
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 
@@ -53,15 +53,16 @@ Sistem Taat Parkir adalah aplikasi web untuk mengelola pelanggaran parkir di lin
 
 ### Frontend
 
-- **React 18** - JavaScript Library
-- **Vite** - Build Tool & Dev Server
-- **React Router v6** - Client-side Routing
+- **React 19** - JavaScript Library
+- **Vite 7** - Build Tool & Dev Server
+- **React Router v7** - Client-side Routing
 - **Axios** - HTTP Client
 - **Framer Motion** - Animation Library
-- **TailwindCSS** - Utility-first CSS
+- **TailwindCSS 4** - Utility-first CSS
 - **Heroicons** - Icon Library
+- **Chart.js** - Data Visualization
 
-## 📦 Instalasi
+## Instalasi
 
 ### Prerequisites
 
@@ -71,14 +72,14 @@ Sistem Taat Parkir adalah aplikasi web untuk mengelola pelanggaran parkir di lin
 - MySQL/MariaDB
 - Git
 
-### 1️⃣ Clone Repository
+### 1. Clone Repository
 
 ```bash
 git clone https://github.com/RiskiJayaPutra/Sistem-taat-parkir-menggunakan-laravel-tailwind-dan-react.git
 cd Sistem-taat-parkir-menggunakan-laravel-tailwind-dan-react
 ```
 
-### 2️⃣ Setup Backend (Laravel)
+### 2. Setup Backend (Laravel)
 
 ```bash
 cd sistem-parkir-api
@@ -114,7 +115,7 @@ php artisan serve
 
 Backend akan berjalan di: `http://localhost:8000`
 
-### 3️⃣ Setup Frontend (React)
+### 3. Setup Frontend (React)
 
 ```bash
 cd ../sistem-parkir-ui
@@ -136,108 +137,78 @@ npm run dev
 
 Frontend akan berjalan di: `http://localhost:5173`
 
-## 🗄️ Database Schema
+## Database Schema
 
-### Tabel Utama:
+### Tabel Utama
 
-- `users` - Data user (admin, satpam, mahasiswa)
-- `mahasiswa` - Detail mahasiswa
-- `jurusan` - Data jurusan
-- `prodi` - Program studi
-- `kendaraan` - Data kendaraan mahasiswa
-- `status_parkir` - Status ban mahasiswa
-- `laporan_pelanggaran` - Laporan pelanggaran
-- `kartu_parkir` - Kartu parkir (jika digunakan)
+| Tabel | Deskripsi |
+|-------|-----------|
+| `users` | Data user (admin, satpam, mahasiswa) |
+| `mahasiswa` | Detail mahasiswa |
+| `jurusan` | Data jurusan |
+| `prodi` | Program studi |
+| `kendaraan` | Data kendaraan mahasiswa |
+| `status_parkir` | Status ban mahasiswa |
+| `laporan_pelanggaran` | Laporan pelanggaran |
+| `kartu_parkir` | Kartu parkir |
 
-## 🔐 Default Credentials
+## Default Credentials
 
 Setelah menjalankan seeder:
 
-**Admin:**
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | `admin` | `password` |
+| Satpam | `satpam1` | `password` |
+| Mahasiswa | (sesuai NPM) | (set saat admin membuat akun) |
 
-- Username: `admin`
-- Password: `password`
-
-**Satpam:**
-
-- Username: `satpam1`
-- Password: `password`
-
-**Mahasiswa:**
-
-- NPM: (sesuai data di database)
-- Password: (set saat admin membuat akun)
-
-## 📸 Screenshots
-
-### Admin Dashboard
-
-![Admin Dashboard](docs/screenshots/admin-dashboard.png)
-
-### Satpam Validasi
-
-![Satpam Dashboard](docs/screenshots/satpam-dashboard.png)
-
-### Mahasiswa Dashboard
-
-![Mahasiswa Dashboard](docs/screenshots/mahasiswa-dashboard.png)
-
-### Buat Laporan
-
-![Buat Laporan](docs/screenshots/buat-laporan.png)
-
-## 🚀 Deployment
-
-### Backend (Laravel)
-
-1. Upload ke server (shared hosting/VPS)
-2. Set environment production di `.env`
-3. Jalankan: `php artisan config:cache`
-4. Set document root ke folder `public`
-
-### Frontend (React)
-
-1. Build production: `npm run build`
-2. Upload folder `dist` ke server
-3. Configure web server (nginx/apache)
-
-## 🔄 API Endpoints
+## API Endpoints
 
 ### Authentication
 
-- `POST /api/login` - Login
-- `POST /api/logout` - Logout
-- `GET /api/me` - Get current user
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| POST | `/api/login` | Login |
+| POST | `/api/logout` | Logout |
+| GET | `/api/me` | Get current user |
 
 ### Admin
 
-- `GET /api/mahasiswa` - List mahasiswa
-- `POST /api/mahasiswa` - Create mahasiswa
-- `GET /api/admin/banned-users` - List banned users
-- `POST /api/admin/unban/{id}` - Unban user
-- `GET /api/admin/satpam` - List satpam
-- `POST /api/admin/satpam` - Create satpam
-- `DELETE /api/admin/satpam/{id}` - Delete satpam
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| GET | `/api/mahasiswa` | List mahasiswa |
+| POST | `/api/mahasiswa` | Create mahasiswa |
+| GET | `/api/admin/banned-users` | List banned users |
+| POST | `/api/admin/unban/{id}` | Unban user |
+| GET | `/api/admin/satpam` | List satpam |
+| POST | `/api/admin/satpam` | Create satpam |
+| DELETE | `/api/admin/satpam/{id}` | Delete satpam |
 
 ### Satpam
 
-- `GET /api/laporan/pending` - Pending reports
-- `POST /api/laporan/{id}/validasi` - Validate report
-- `POST /api/laporan/{id}/tolak` - Reject report
-- `GET /api/laporan/satpam-stats` - Statistics
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| GET | `/api/laporan/pending` | Pending reports |
+| POST | `/api/laporan/{id}/validasi` | Validate report |
+| POST | `/api/laporan/{id}/tolak` | Reject report |
+| GET | `/api/laporan/satpam-stats` | Statistics |
 
 ### Mahasiswa
 
-- `POST /api/laporan` - Create report
-- `GET /api/my-dashboard` - Personal dashboard data
-- `DELETE /api/laporan/{id}` - Cancel pending report
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| POST | `/api/laporan` | Create report |
+| GET | `/api/my-dashboard` | Personal dashboard data |
+| DELETE | `/api/laporan/{id}` | Cancel pending report |
 
 ### Reports
 
-- `GET /api/report/top-pelanggar` - Top 10 violators
-- `GET /api/report/per-prodi` - Statistics per department
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| GET | `/api/report/top-pelanggar` | Top 10 violators |
+| GET | `/api/report/per-prodi` | Statistics per department |
 
-## 🏗️ Struktur Project
+## Struktur Project
 
 ```
 Sistem-taat-parkir/
@@ -260,20 +231,37 @@ Sistem-taat-parkir/
     ├── src/
     │   ├── api/
     │   │   └── axiosClient.js
+    │   ├── components/
     │   ├── layouts/
-    │   │   └── AuthenticatedLayout.jsx
+    │   │   └── MainLayout.jsx
     │   ├── pages/
     │   │   ├── AdminDashboard.jsx
     │   │   ├── SatpamDashboard.jsx
     │   │   ├── MahasiswaDashboard.jsx
     │   │   └── BuatLaporanPage.jsx
+    │   ├── utils/
     │   ├── router.jsx
     │   ├── App.jsx
     │   └── main.jsx
     └── package.json
 ```
 
-## 🐛 Troubleshooting
+## Deployment
+
+### Backend (Laravel)
+
+1. Upload ke server (shared hosting/VPS)
+2. Set environment production di `.env`
+3. Jalankan: `php artisan config:cache`
+4. Set document root ke folder `public`
+
+### Frontend (React)
+
+1. Build production: `npm run build`
+2. Upload folder `dist` ke server
+3. Configure web server (nginx/apache)
+
+## Troubleshooting
 
 ### Backend Error "SQLSTATE connection refused"
 
@@ -293,22 +281,7 @@ Sistem-taat-parkir/
 - Cek permission folder `storage`
 - Pastikan max upload di `php.ini`: `upload_max_filesize=2M`
 
-## 📝 Changelog
-
-### Version 1.0.0 (November 2025)
-
-- ✅ Initial release
-- ✅ 8 Major features implemented:
-  1. Admin satpam management
-  2. Satpam dashboard stats
-  3. Admin dashboard stats fix
-  4. Edit mahasiswa improvements
-  5. Mahasiswa dashboard overhaul
-  6. User names in all dashboards
-  7. Report creation fixes
-  8. Performance optimization (eager loading)
-
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -318,24 +291,12 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+## Author
 
 **Riski Jaya Putra**
 
 - GitHub: [@RiskiJayaPutra](https://github.com/RiskiJayaPutra)
-
-## 🙏 Acknowledgments
-
-- Laravel Documentation
-- React Documentation
-- TailwindCSS
-- Heroicons
-- Framer Motion
-
----
-
-⭐ **Jika project ini membantu, jangan lupa beri star!** ⭐
