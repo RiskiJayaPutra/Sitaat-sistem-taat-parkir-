@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import axiosClient from "../api/axiosClient"; // <-- MENGGUNAKAN AXIOS CLIENT PINTAR
 import { useNavigate } from "react-router-dom"; // <-- IMPORT DI ATAS
 import { motion } from "framer-motion";
+import { showToast } from "../utils/toast";
+import { HandRaisedIcon } from "@heroicons/react/24/outline";
 
 export default function LoginPage() {
   // --- PENTING: HOOK HARUS DI DALAM FUNGSI ---
@@ -24,20 +26,19 @@ export default function LoginPage() {
         password: password,
       })
       .then((response) => {
-        console.log("Login Berhasil!");
-
         // Simpan token dan data user ke localStorage
         const { token, user } = response.data;
         localStorage.setItem("APP_TOKEN", token);
         localStorage.setItem("APP_USER", JSON.stringify(user));
 
+        showToast.success(`Welcome back, ${user.nama || user.username}!`);
+
         // Arahkan ke Dashboard (pastikan rute '/dashboard' sudah ada di router.jsx Anda)
-        navigate("/dashboard");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 500);
       })
       .catch((error) => {
-        console.error("Login Gagal:", error);
-        console.error("Error Response:", error.response);
-
         if (error.response && error.response.status === 422) {
           // Error validasi dari Laravel
           setError(error.response.data.message);
@@ -66,7 +67,7 @@ export default function LoginPage() {
   // ... (kode handleLogin di atas tetap sama) ...
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-blue-50 p-4">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -75,11 +76,12 @@ export default function LoginPage() {
       >
         <div className="p-8 sm:p-10">
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900">
-              Selamat Datang Kembali! 👋
+            <h2 className="text-3xl font-extrabold text-gray-900 flex items-center justify-center gap-2">
+              Selamat Datang Kembali!
+              <HandRaisedIcon className="h-8 w-8" />
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Silakan login untuk mengakses SIPATA
+              Silakan login untuk mengakses SITAAT
             </p>
           </div>
 

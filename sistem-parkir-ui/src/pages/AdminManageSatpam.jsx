@@ -5,24 +5,23 @@ import axiosClient from "../api/axiosClient";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
+import { showToast } from "../utils/toast";
+import { ListSkeleton } from "../components/SkeletonLoader";
 import {
   ShieldCheckIcon,
   PlusIcon,
   TrashIcon,
+  PencilSquareIcon,
+  ArrowLeftIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
 export default function AdminManageSatpam() {
   const [satpam, setSatpam] = useState([]);
+  const [filteredList, setFilteredList] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState(null);
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    username: "",
-    nama: "",
-    password: "",
-  });
-  const [formLoading, setFormLoading] = useState(false);
 
   const fetchSatpam = () => {
     setLoading(true);
@@ -31,12 +30,16 @@ export default function AdminManageSatpam() {
       .get("/admin/satpam")
       .then(({ data }) => {
         setSatpam(data);
+        setFilteredList(data);
         setLoading(false);
+        if (data.length > 0) {
+          showToast.info(`Loaded ${data.length} satpam accounts`);
+        }
       })
       .catch((err) => {
-        console.error("Gagal mengambil data satpam:", err);
         setError("Gagal memuat data satpam.");
         setLoading(false);
+        showToast.error("Gagal memuat data satpam");
       });
   };
 
@@ -44,38 +47,14 @@ export default function AdminManageSatpam() {
     fetchSatpam();
   }, []);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setFormLoading(true);
-    setMessage(null);
-
-    axiosClient
-      .post("/admin/satpam", formData)
-      .then((response) => {
-        setMessage({ type: "success", text: response.data.message });
-        setFormData({ username: "", nama: "", password: "" });
-        setShowForm(false);
-        fetchSatpam();
-        setFormLoading(false);
-      })
-      .catch((err) => {
-        setFormLoading(false);
-        if (err.response && err.response.status === 422) {
-          const errors = err.response.data.errors;
-          const errorMessages = Object.values(errors).flat().join(", ");
-          setMessage({ type: "error", text: errorMessages });
-        } else {
-          setMessage({
-            type: "error",
-            text: "Gagal menambahkan satpam. Coba lagi.",
-          });
-        }
-      });
-  };
+  useEffect(() => {
+    const filtered = satpam.filter(
+      (s) =>
+        s.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (s.nama && s.nama.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+    setFilteredList(filtered);
+  }, [searchTerm, satpam]);
 
   const handleDelete = (id, nama) => {
     Swal.fire({
@@ -89,7 +68,6 @@ export default function AdminManageSatpam() {
       cancelButtonText: "Batal",
     }).then((result) => {
       if (result.isConfirmed) {
-        setMessage(null);
         axiosClient
           .delete(`/admin/satpam/${id}`)
           .then((response) => {
@@ -97,14 +75,13 @@ export default function AdminManageSatpam() {
               icon: "success",
               title: "Berhasil!",
               text: response.data.message,
-              confirmButtonColor: "#4F46E5",
+              confirmButtonColor: "#2563EB",
               timer: 2000,
               timerProgressBar: true,
             });
             fetchSatpam();
           })
           .catch((err) => {
-            console.error("Gagal menghapus satpam:", err);
             Swal.fire({
               icon: "error",
               title: "Gagal!",
@@ -116,191 +93,165 @@ export default function AdminManageSatpam() {
     });
   };
 
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="rounded-xl bg-white p-6 shadow-lg border border-gray-100">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+            <div className="h-10 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+        <ListSkeleton count={5} />
+      </div>
+    );
+  }
+
+  if (error)
+    return (
+      <div className="rounded-xl bg-red-50 p-6 text-red-700 border border-red-200">
+        {error}
+      </div>
+    );
+
   return (
-    <div className="space-y-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-6"
+    >
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
       >
-        <div>
-          <h2 className="text-3xl font-bold text-gray-900">Kelola Satpam</h2>
-          <p className="mt-1 text-sm text-gray-600">
-            Daftar akun satpam yang terdaftar
-          </p>
-        </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white shadow-lg transition-all hover:bg-indigo-700"
+        <Link
+          to="/dashboard"
+          className="mb-4 inline-flex items-center gap-2 text-sm text-gray-600 transition-colors hover:text-gray-900"
         >
-          <PlusIcon className="h-5 w-5" />
-          Tambah Satpam
-        </button>
+          <ArrowLeftIcon className="h-4 w-4" />
+          Kembali ke Dashboard
+        </Link>
+
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-blue-100 p-2">
+              <ShieldCheckIcon className="h-6 w-6 text-blue-600 sm:h-8 sm:w-8" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">
+                Manajemen Satpam
+              </h2>
+              <p className="text-xs text-gray-600 sm:text-sm dark:text-gray-400">
+                Kelola akun satpam yang terdaftar
+              </p>
+            </div>
+          </div>
+
+          <Link
+            to="/admin/satpam/tambah"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 font-semibold text-white shadow-lg transition-all hover:bg-blue-700 hover:scale-105 sm:px-6 sm:py-3 touch-manipulation"
+          >
+            <PlusIcon className="h-5 w-5" />
+            Tambah Satpam
+          </Link>
+        </div>
       </motion.div>
 
-      {/* Status Message */}
-      {message && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`rounded-xl p-4 ${
-            message.type === "success"
-              ? "bg-green-50 text-green-800 border border-green-200"
-              : "bg-red-50 text-red-800 border border-red-200"
-          }`}
-        >
-          <p className="font-medium">{message.text}</p>
-        </motion.div>
-      )}
-
-      {/* Form Tambah Satpam */}
-      {showForm && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="rounded-xl bg-white p-6 shadow-lg border border-gray-100"
-        >
-          <h3 className="mb-4 text-xl font-bold text-gray-900">
-            Tambah Satpam Baru
-          </h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Username
-              </label>
-              <input
-                type="text"
-                name="username"
-                required
-                value={formData.username}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Nama Lengkap
-              </label>
-              <input
-                type="text"
-                name="nama"
-                required
-                value={formData.nama}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              />
-            </div>
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                disabled={formLoading}
-                className="flex-1 rounded-md bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 disabled:opacity-50"
-              >
-                {formLoading ? "Menyimpan..." : "Simpan"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowForm(false)}
-                className="flex-1 rounded-md bg-gray-200 px-4 py-2 text-gray-700 font-medium hover:bg-gray-300"
-              >
-                Batal
-              </button>
-            </div>
-          </form>
-        </motion.div>
-      )}
-
-      {/* Loading State */}
-      {loading && (
-        <div className="flex items-center justify-center py-12">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600"></div>
+      {/* Search Bar */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.1 }}
+        className="rounded-xl bg-white p-4 shadow-lg border border-gray-100"
+      >
+        <div className="relative">
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Cari berdasarkan username atau nama..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full rounded-lg border-2 border-gray-200 py-3 pl-10 pr-4 transition-all focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20"
+          />
         </div>
-      )}
-
-      {/* Error State */}
-      {error && (
-        <div className="rounded-xl bg-red-50 p-6 text-center text-red-700 border border-red-200">
-          {error}
-        </div>
-      )}
+        <p className="mt-2 text-sm text-gray-500">
+          Menampilkan {filteredList.length} dari {satpam.length} satpam
+        </p>
+      </motion.div>
 
       {/* Satpam List */}
-      {!loading && !error && (
-        <div className="overflow-hidden rounded-xl bg-white shadow-lg border border-gray-100">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Username
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Nama
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Dibuat
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Aksi
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {satpam.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan="4"
-                    className="px-6 py-8 text-center text-gray-500"
-                  >
-                    Belum ada satpam terdaftar
-                  </td>
-                </tr>
-              ) : (
-                satpam.map((s) => (
-                  <tr key={s.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <ShieldCheckIcon className="h-5 w-5 text-indigo-600" />
-                        <span className="font-medium text-gray-900">
-                          {s.username}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {s.nama || "-"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        {filteredList.length === 0 ? (
+          <div className="rounded-xl bg-white p-12 text-center shadow-lg border border-gray-100">
+            <ShieldCheckIcon className="mx-auto h-16 w-16 text-gray-300" />
+            <p className="mt-4 text-lg font-medium text-gray-500">
+              {searchTerm
+                ? "Tidak ada satpam yang cocok dengan pencarian"
+                : "Belum ada data satpam"}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredList.map((s, index) => (
+              <motion.div
+                key={s.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className="flex flex-col gap-4 rounded-xl bg-white p-6 shadow-lg border border-gray-100 transition-all hover:shadow-xl sm:flex-row sm:items-center sm:justify-between dark:bg-gray-800 dark:border-gray-700"
+              >
+                <div className="flex-1">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 font-bold text-blue-600">
+                      {s.nama
+                        ? s.nama.charAt(0).toUpperCase()
+                        : s.username.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="text-lg font-bold text-gray-900">
+                        {s.nama || s.username}
+                      </p>
+                      <p className="text-sm text-gray-500">@{s.username}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
+                      🛡️ Satpam
+                    </span>
+                    <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">
+                      Terdaftar:{" "}
                       {new Date(s.created_at).toLocaleDateString("id-ID")}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                      <button
-                        onClick={() => handleDelete(s.id, s.nama || s.username)}
-                        className="inline-flex items-center gap-1 rounded-md bg-red-100 px-3 py-1 text-sm font-medium text-red-700 hover:bg-red-200"
-                      >
-                        <TrashIcon className="h-4 w-4" />
-                        Hapus
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <Link
+                    to={`/admin/satpam/edit/${s.id}`}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white shadow-lg transition-all hover:bg-blue-700"
+                  >
+                    <PencilSquareIcon className="h-5 w-5" />
+                    Edit
+                  </Link>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleDelete(s.id, s.nama)}
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 font-semibold text-white shadow-lg transition-all hover:bg-red-700"
+                  >
+                    <TrashIcon className="h-5 w-5" />
+                    Hapus
+                  </motion.button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </motion.div>
+    </motion.div>
   );
 }

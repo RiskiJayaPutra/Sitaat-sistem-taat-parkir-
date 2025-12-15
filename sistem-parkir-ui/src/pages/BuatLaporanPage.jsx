@@ -11,30 +11,85 @@ import {
 
 export default function BuatLaporanPage() {
   const [platNomor, setPlatNomor] = useState("");
-  const [foto, setFoto] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [deskripsi, setDeskripsi] = useState("");
+  const [fotos, setFotos] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setFoto(file);
+    const files = Array.from(event.target.files);
+
+    // Validasi maksimal 5 foto
+    if (files.length + fotos.length > 5) {
+      Swal.fire({
+        icon: "warning",
+        title: "Maksimal 5 Foto",
+        text: "Anda hanya bisa mengunggah maksimal 5 foto per laporan",
+        confirmButtonColor: "#F59E0B",
+      });
+      return;
+    }
+
+    // Validasi ukuran file (max 2MB per file)
+    const invalidFiles = files.filter((file) => file.size > 2048000);
+    if (invalidFiles.length > 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "File Terlalu Besar",
+        text: "Setiap foto maksimal 2MB",
+        confirmButtonColor: "#F59E0B",
+      });
+      return;
+    }
+
+    const newFotos = [...fotos, ...files];
+    setFotos(newFotos);
+
+    // Generate preview URLs
+    const newPreviews = [...previewUrls];
+    files.forEach((file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewUrl(reader.result);
+        newPreviews.push(reader.result);
+        if (newPreviews.length === newFotos.length) {
+          setPreviewUrls(newPreviews);
+        }
       };
       reader.readAsDataURL(file);
-    }
+    });
+  };
+
+  const removePhoto = (index) => {
+    const newFotos = fotos.filter((_, i) => i !== index);
+    const newPreviews = previewUrls.filter((_, i) => i !== index);
+    setFotos(newFotos);
+    setPreviewUrls(newPreviews);
   };
 
   const handleSubmitLaporan = (event) => {
     event.preventDefault();
+
+    if (fotos.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "Foto Diperlukan",
+        text: "Harap upload minimal 1 foto bukti pelanggaran",
+        confirmButtonColor: "#F59E0B",
+      });
+      return;
+    }
+
     setLoading(true);
 
     const formData = new FormData();
     formData.append("plat_nomor_terlapor", platNomor);
-    formData.append("foto", foto);
+    formData.append("deskripsi", deskripsi);
+
+    // Append multiple fotos
+    fotos.forEach((foto, index) => {
+      formData.append(`fotos[${index}]`, foto);
+    });
 
     axiosClient
       .post("/laporan", formData, {
@@ -44,6 +99,13 @@ export default function BuatLaporanPage() {
       })
       .then((response) => {
         setLoading(false);
+        setPlatNomor("");
+        setDeskripsi("");
+        setFotos([]);
+        setPreviewUrls([]);
+        if (document.getElementById("fotos")) {
+          document.getElementById("fotos").value = null;
+        }
 
         Swal.fire({
           icon: "success",
@@ -51,18 +113,13 @@ export default function BuatLaporanPage() {
           text:
             response.data.message ||
             "Laporan berhasil dikirim dan sedang menunggu validasi.",
-          confirmButtonColor: "#4F46E5",
+          confirmButtonColor: "#2563EB",
           confirmButtonText: "OK",
           timer: 3000,
           timerProgressBar: true,
         }).then(() => {
           navigate("/dashboard");
         });
-
-        setPlatNomor("");
-        setFoto(null);
-        setPreviewUrl(null);
-        document.getElementById("foto").value = null;
       })
       .catch((error) => {
         setLoading(false);
@@ -96,8 +153,8 @@ export default function BuatLaporanPage() {
           Kembali ke Dashboard
         </button>
         <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-indigo-100 p-2">
-            <DocumentTextIcon className="h-8 w-8 text-indigo-600" />
+          <div className="rounded-lg bg-blue-100 p-2">
+            <DocumentTextIcon className="h-8 w-8 text-blue-600" />
           </div>
           <div>
             <h2 className="text-3xl font-bold text-gray-900">
@@ -129,7 +186,7 @@ export default function BuatLaporanPage() {
               name="plat_nomor"
               type="text"
               required
-              className="block w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-lg font-semibold text-gray-900 placeholder-gray-400 transition-all focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
+              className="block w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-lg font-semibold text-gray-900 placeholder-gray-400 transition-all focus:border-blue-600 focus:ring-4 focus:ring-blue-600/20"
               placeholder="BE 1234 AA"
               value={platNomor}
               onChange={(e) => setPlatNomor(e.target.value.toUpperCase())}
@@ -137,63 +194,97 @@ export default function BuatLaporanPage() {
           </div>
 
           <div>
+            <label
+              htmlFor="deskripsi"
+              className="mb-2 block text-sm font-bold text-gray-700"
+            >
+              Deskripsi Pelanggaran
+            </label>
+            <textarea
+              id="deskripsi"
+              name="deskripsi"
+              rows="4"
+              required
+              minLength="10"
+              className="block w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-gray-900 placeholder-gray-400 transition-all focus:border-blue-600 focus:ring-4 focus:ring-blue-600/20"
+              placeholder="Jelaskan pelanggaran yang terjadi (minimal 10 karakter)..."
+              value={deskripsi}
+              onChange={(e) => setDeskripsi(e.target.value)}
+            />
+          </div>
+
+          <div>
             <label className="mb-2 block text-sm font-bold text-gray-700">
-              Upload Foto Bukti
+              Upload Foto Bukti (1-5 foto)
             </label>
 
-            {previewUrl ? (
+            {/* Preview Grid */}
+            {previewUrls.length > 0 && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="relative mb-4"
+                className="mb-4 grid grid-cols-2 md:grid-cols-3 gap-4"
               >
-                <img
-                  src={previewUrl}
-                  alt="Preview"
-                  className="h-64 w-full rounded-xl object-cover border-2 border-gray-200"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFoto(null);
-                    setPreviewUrl(null);
-                    document.getElementById("foto").value = null;
-                  }}
-                  className="absolute right-2 top-2 rounded-full bg-red-500 px-3 py-1 text-sm font-bold text-white shadow-lg transition-all hover:bg-red-600"
-                >
-                  Hapus
-                </button>
+                {previewUrls.map((url, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={url}
+                      alt={`Preview ${index + 1}`}
+                      className="h-32 w-full rounded-xl object-cover border-2 border-gray-200"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removePhoto(index)}
+                      className="absolute right-2 top-2 rounded-full bg-red-500 px-2 py-1 text-xs font-bold text-white shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                    >
+                      Hapus
+                    </button>
+                    <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                      Foto {index + 1}
+                    </div>
+                  </div>
+                ))}
               </motion.div>
-            ) : (
+            )}
+
+            {/* Upload button - show if less than 5 photos */}
+            {fotos.length < 5 && (
               <label className="group relative block cursor-pointer">
-                <div className="flex h-64 flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 transition-all hover:border-indigo-500 hover:bg-indigo-50">
-                  <CameraIcon className="h-16 w-16 text-gray-400 transition-colors group-hover:text-indigo-600" />
-                  <p className="mt-4 text-sm font-medium text-gray-600 group-hover:text-indigo-600">
-                    Klik untuk upload foto
+                <div className="flex h-32 flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 transition-all hover:border-blue-600 hover:bg-blue-50">
+                  <CameraIcon className="h-12 w-12 text-gray-400 transition-colors group-hover:text-blue-600" />
+                  <p className="mt-2 text-sm font-medium text-gray-600 group-hover:text-blue-600">
+                    {fotos.length === 0
+                      ? "Klik untuk upload foto"
+                      : "Tambah foto lagi"}
                   </p>
                   <p className="mt-1 text-xs text-gray-500">
-                    JPG, PNG (Max 2MB)
+                    JPG, PNG (Max 2MB) - {fotos.length}/5 foto
                   </p>
                 </div>
                 <input
-                  id="foto"
-                  name="foto"
+                  id="fotos"
+                  name="fotos"
                   type="file"
-                  required
+                  multiple
                   accept="image/jpeg,image/png"
                   className="hidden"
                   onChange={handleFileChange}
                 />
               </label>
             )}
+
+            <p className="mt-3 text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <strong>⚠️ Penting:</strong> Satu laporan hanya untuk 1 kendaraan.
+              Upload 1-5 foto bukti pelanggaran kendaraan yang sama.
+            </p>
           </div>
 
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            disabled={loading || !foto}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-4 text-lg font-bold text-white shadow-lg transition-all hover:bg-indigo-700 hover:shadow-indigo-500/30 focus:outline-none focus:ring-4 focus:ring-indigo-500/50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:bg-gray-400"
+            disabled={loading || fotos.length === 0}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-4 text-lg font-bold text-white shadow-lg transition-all hover:bg-blue-700 hover:shadow-blue-500/30 focus:outline-none focus:ring-4 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:bg-gray-400"
           >
             {loading ? (
               <>
@@ -203,7 +294,7 @@ export default function BuatLaporanPage() {
             ) : (
               <>
                 <DocumentTextIcon className="h-6 w-6" />
-                Kirim Laporan
+                Kirim Laporan ({fotos.length} foto)
               </>
             )}
           </motion.button>

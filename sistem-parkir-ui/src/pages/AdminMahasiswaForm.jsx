@@ -130,7 +130,7 @@ export default function AdminMahasiswaForm() {
         </h2>
         <Link
           to="/admin/mahasiswa"
-          className="text-sm text-indigo-600 hover:text-indigo-800"
+          className="text-sm text-blue-600 hover:text-blue-800"
         >
           &larr; Kembali
         </Link>
@@ -159,12 +159,12 @@ export default function AdminMahasiswaForm() {
             required
             value={formData.nama}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>
 
         {/* NPM & ANGKATAN (Grid 2 Kolom) */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-gray-700">
               NPM
@@ -175,7 +175,7 @@ export default function AdminMahasiswaForm() {
               required
               value={formData.npm}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
           <div>
@@ -188,7 +188,7 @@ export default function AdminMahasiswaForm() {
               required
               value={formData.angkatan}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -203,7 +203,7 @@ export default function AdminMahasiswaForm() {
             required
             value={formData.prodi_id}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           >
             <option value="">-- Pilih Prodi --</option>
             {prodiList.map((prodi) => (
@@ -230,7 +230,7 @@ export default function AdminMahasiswaForm() {
                 ? "Masukkan password baru (opsional)"
                 : "Masukkan password"
             }
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
           {isEditMode && (
             <p className="mt-1 text-xs text-gray-500">
@@ -255,7 +255,7 @@ export default function AdminMahasiswaForm() {
               value={formData.plat_nomor}
               onChange={handleChange}
               placeholder="BE 1234 XX"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -285,7 +285,7 @@ export default function AdminMahasiswaForm() {
               type="file"
               accept="application/pdf"
               onChange={(e) => setFotoKtm(e.target.files[0])}
-              className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100"
+              className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
             />
             {isEditMode && (
               <p className="mt-1 text-xs text-gray-500">
@@ -321,7 +321,7 @@ export default function AdminMahasiswaForm() {
               type="file"
               accept="application/pdf"
               onChange={(e) => setFotoStnk(e.target.files[0])}
-              className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100"
+              className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
             />
             {isEditMode && (
               <p className="mt-1 text-xs text-gray-500">
@@ -341,7 +341,7 @@ export default function AdminMahasiswaForm() {
           <button
             type="submit"
             disabled={loading}
-            className="flex w-full justify-center items-center gap-2 rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="flex w-full justify-center items-center gap-2 rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed touch-manipulation"
           >
             {loading && (
               <svg

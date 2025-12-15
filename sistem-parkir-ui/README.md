@@ -1,16 +1,100 @@
-# React + Vite
+# Sistem Parkir UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend aplikasi Sistem Manajemen Parkir berbasis React untuk pengelolaan parkir kampus. Aplikasi ini menyediakan dashboard untuk Admin, Satpam, dan Mahasiswa.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** - Library UI
+- **Vite 7** - Build tool
+- **Tailwind CSS 4** - Styling
+- **React Router DOM** - Routing
+- **Axios** - HTTP client
+- **Chart.js** - Visualisasi data
+- **Framer Motion** - Animasi
+- **React Toastify & SweetAlert2** - Notifikasi
 
-## React Compiler
+## Struktur Folder
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+src/
+├── api/            # Konfigurasi Axios client
+├── assets/         # Asset statis (gambar, icon)
+├── components/     # Komponen reusable
+├── contexts/       # React Context (state management)
+├── layouts/        # Template layout halaman
+├── pages/          # Halaman aplikasi
+├── utils/          # Fungsi utilitas
+├── App.jsx         # Komponen root
+├── main.jsx        # Entry point
+└── router.jsx      # Konfigurasi routing
+```
 
-## Expanding the ESLint configuration
+## Fitur
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**Admin**
+- Dashboard statistik parkir
+- Manajemen data mahasiswa
+- Manajemen data satpam
+
+**Satpam**
+- Dashboard monitoring
+- Verifikasi kendaraan
+- Laporan aktivitas
+
+**Mahasiswa**
+- Dashboard pribadi
+- Riwayat parkir
+- Profil pengguna
+
+## Instalasi
+
+1. Clone repository
+   ```bash
+   git clone <repository-url>
+   cd sistem-parkir-ui
+   ```
+
+2. Install dependencies
+   ```bash
+   npm install
+   ```
+
+3. Konfigurasi environment
+   ```bash
+   cp .env.example .env
+   ```
+   Sesuaikan `VITE_API_URL` dengan URL backend API.
+
+4. Jalankan development server
+   ```bash
+   npm run dev
+   ```
+
+5. Akses aplikasi di `http://localhost:5173`
+
+## Build Production
+
+```bash
+npm run build
+```
+
+Output build akan tersedia di folder `dist/`.
+
+## Scripts
+
+| Command | Deskripsi |
+|---------|-----------|
+| `npm run dev` | Menjalankan development server |
+| `npm run build` | Build untuk production |
+| `npm run preview` | Preview hasil build |
+| `npm run lint` | Menjalankan ESLint |
+
+## Requirements
+
+- Node.js 18+
+- npm 9+
+- Backend API (sistem-parkir-api) harus berjalan
+
+## Lisensi
+
+MIT License

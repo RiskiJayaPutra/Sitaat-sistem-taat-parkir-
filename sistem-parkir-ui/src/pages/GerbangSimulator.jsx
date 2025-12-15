@@ -52,7 +52,7 @@ export default function GerbangSimulator() {
             animate={{ y: 0 }}
             className="mb-8 text-center"
           >
-            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-blue-600">
               <FingerPrintIcon className="h-12 w-12 text-white" />
             </div>
             <h1 className="text-3xl font-extrabold text-white">
@@ -151,7 +151,7 @@ export default function GerbangSimulator() {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading || !npm}
-              className="flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 text-lg font-bold text-white shadow-lg transition-all hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:from-gray-600 disabled:to-gray-600"
+              className="flex w-full items-center justify-center gap-3 rounded-xl bg-blue-600 px-6 py-4 text-lg font-bold text-white shadow-lg transition-all hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500/50 disabled:cursor-not-allowed disabled:bg-gray-600"
             >
               <FingerPrintIcon className="h-7 w-7" />
               {loading ? "Memindai..." : "SCAN SEKARANG"}

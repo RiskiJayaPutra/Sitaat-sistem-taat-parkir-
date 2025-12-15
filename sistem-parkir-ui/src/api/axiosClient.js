@@ -1,21 +1,13 @@
-// src/api/axiosClient.js
-
 import axios from "axios";
 
-// 1. Buat instance axios baru
 const axiosClient = axios.create({
-  // Tentukan URL dasar untuk semua request API kita
   baseURL: "http://localhost:8000/api",
 });
 
-// 2. Tambahkan "Interceptor" (Pencegat Request)
-// Ini adalah fungsi yang akan berjalan SEBELUM setiap request dikirim
 axiosClient.interceptors.request.use(
   (config) => {
-    // 3. Ambil token dari localStorage
     const token = localStorage.getItem("APP_TOKEN");
 
-    // 4. Jika token ada, tambahkan ke header Authorization
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -23,7 +15,24 @@ axiosClient.interceptors.request.use(
     return config;
   },
   (error) => {
-    // Lakukan sesuatu jika ada error request
+    return Promise.reject(error);
+  }
+);
+
+axiosClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("APP_TOKEN");
+      localStorage.removeItem("APP_USER");
+
+      if (!window.location.pathname.includes("/login")) {
+        window.location.href = "/login";
+      }
+    }
+
     return Promise.reject(error);
   }
 );

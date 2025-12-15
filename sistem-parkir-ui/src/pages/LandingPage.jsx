@@ -31,7 +31,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex min-h-screen flex-col bg-linear-to-br from-gray-50 to-gray-100">
       {/* Navbar Sederhana dengan animasi turun */}
       <motion.header
         initial={{ y: -100, opacity: 0 }}
@@ -45,7 +45,7 @@ export default function LandingPage() {
               <ShieldCheckIcon className="h-6 w-6 text-white" />
             </div>
             <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-              SIPATA <span className="text-indigo-600">FT</span>
+              SITAAT <span className="text-indigo-600">FT</span>
             </h1>
           </div>
           <div className="space-x-4">
@@ -86,9 +86,7 @@ export default function LandingPage() {
             className="mb-6 text-5xl font-extrabold leading-tight text-gray-900 md:text-7xl"
           >
             Wujudkan Parkir Tertib di <br />
-            <span className="bg-gradient-to-r from-indigo-600 to-blue-500 bg-clip-text text-transparent">
-              Fakultas Teknik
-            </span>
+            <span className="text-blue-600">Fakultas Teknik</span>
           </motion.h2>
 
           <motion.p

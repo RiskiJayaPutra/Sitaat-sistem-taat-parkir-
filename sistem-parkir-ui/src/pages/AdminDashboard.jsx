@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import { motion } from "framer-motion";
+import { DashboardSkeleton } from "../components/SkeletonLoader";
 import {
   ChartPieIcon,
   UserGroupIcon,
@@ -69,7 +70,6 @@ export default function AdminDashboard() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Gagal mengambil data:", error);
         setError("Gagal memuat data dashboard.");
         setLoading(false);
       });
@@ -88,17 +88,14 @@ export default function AdminDashboard() {
         fetchData();
       })
       .catch((error) => {
-        console.error("Gagal unban:", error);
         setMessage({ type: "error", text: "Gagal melepas ban. Coba lagi." });
       });
   };
 
-  if (loading)
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600"></div>
-      </div>
-    );
+  if (loading) {
+    return <DashboardSkeleton />;
+  }
+
   if (error)
     return (
       <div className="rounded-xl bg-red-50 p-6 text-red-700 border border-red-200">
@@ -123,7 +120,7 @@ export default function AdminDashboard() {
           <p className="mt-1 text-sm text-gray-600">
             Kelola sistem parkir dan data mahasiswa
             {user?.nama && (
-              <span className="font-semibold text-indigo-600">
+              <span className="font-semibold text-blue-600">
                 {" "}
                 • {user.nama}
               </span>
@@ -140,7 +137,7 @@ export default function AdminDashboard() {
           </Link>
           <Link
             to="/admin/mahasiswa"
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white shadow-lg transition-all hover:bg-indigo-700 hover:scale-105"
+            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white shadow-lg transition-all hover:bg-blue-700 hover:scale-105"
           >
             <UserGroupIcon className="h-5 w-5" />
             Kelola Mahasiswa
@@ -173,8 +170,8 @@ export default function AdminDashboard() {
           className="rounded-2xl bg-white p-8 shadow-xl border border-gray-100 lg:col-span-2"
         >
           <div className="mb-6 flex items-center gap-3">
-            <div className="rounded-lg bg-indigo-100 p-2">
-              <ChartPieIcon className="h-6 w-6 text-indigo-600" />
+            <div className="rounded-lg bg-blue-100 p-2">
+              <ChartPieIcon className="h-6 w-6 text-blue-600" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900">
@@ -221,7 +218,7 @@ export default function AdminDashboard() {
           transition={{ delay: 0.2 }}
           className="space-y-4"
         >
-          <div className="rounded-2xl bg-gradient-to-br from-red-500 to-pink-600 p-6 text-white shadow-xl">
+          <div className="rounded-2xl bg-red-600 p-6 text-white shadow-xl">
             <ShieldCheckIcon className="h-10 w-10 opacity-80" />
             <p className="mt-4 text-sm font-medium opacity-90">
               User Terblokir
@@ -229,7 +226,7 @@ export default function AdminDashboard() {
             <p className="text-4xl font-bold">{stats.total_banned}</p>
           </div>
 
-          <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-6 text-white shadow-xl">
+          <div className="rounded-2xl bg-blue-600 p-6 text-white shadow-xl">
             <UserGroupIcon className="h-10 w-10 opacity-80" />
             <p className="mt-4 text-sm font-medium opacity-90">
               Total Mahasiswa
@@ -237,7 +234,7 @@ export default function AdminDashboard() {
             <p className="text-4xl font-bold">{stats.total_mahasiswa}</p>
           </div>
 
-          <div className="rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 p-6 text-white shadow-xl">
+          <div className="rounded-2xl bg-green-600 p-6 text-white shadow-xl">
             <ShieldCheckIcon className="h-10 w-10 opacity-80" />
             <p className="mt-4 text-sm font-medium opacity-90">Total Satpam</p>
             <p className="text-4xl font-bold">{stats.total_satpam}</p>
